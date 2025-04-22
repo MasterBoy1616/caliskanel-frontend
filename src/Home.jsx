@@ -3,6 +3,9 @@ import axios from "axios";
 import { generatePdf } from "./pdfGenerator";
 import "./SpotliraTheme.css";
 
+// Axios BASE URL ayarı (en üstte bu olacak!)
+axios.defaults.baseURL = "https://caliskanel-bcs-teklif.onrender.com";
+
 function Home() {
   const [markalar, setMarkalar] = useState([]);
   const [modeller, setModeller] = useState([]);
@@ -13,7 +16,7 @@ function Home() {
   const [plaka, setPlaka] = useState("");
 
   useEffect(() => {
-    axios.get("https://caliskanel-bcs-teklif.onrender.com/api/markalar")
+    axios.get("/api/markalar")
       .then(res => setMarkalar(res.data))
       .catch(err => console.error("Marka çekme hatası:", err));
   }, []);
@@ -23,7 +26,7 @@ function Home() {
     setSelectedMarka(marka);
     setSelectedModel("");
     setParts([]);
-    axios.get(`https://caliskanel-bcs-teklif.onrender.com/api/modeller?marka=${encodeURIComponent(marka)}`)
+    axios.get(`/api/modeller?marka=${encodeURIComponent(marka)}`)
       .then(res => setModeller(res.data))
       .catch(err => console.error("Model çekme hatası:", err));
   };
@@ -31,7 +34,7 @@ function Home() {
   const handleModelChange = (e) => {
     const model = e.target.value;
     setSelectedModel(model);
-    axios.get(`https://caliskanel-bcs-teklif.onrender.com/api/parcalar?marka=${encodeURIComponent(selectedMarka)}&model=${encodeURIComponent(model)}`)
+    axios.get(`/api/parcalar?marka=${encodeURIComponent(selectedMarka)}&model=${encodeURIComponent(model)}`)
       .then(res => setParts(res.data))
       .catch(err => console.error("Parça çekme hatası:", err));
   };
