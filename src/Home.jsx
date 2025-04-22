@@ -11,6 +11,8 @@ function Home() {
   const [selectedMarka, setSelectedMarka] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
   const [parts, setParts] = useState([]);
+  const [ekstralar, setEkstralar] = useState([]);
+  const [selectedEkstralar, setSelectedEkstralar] = useState([]);
   const [isim, setIsim] = useState("");
   const [plaka, setPlaka] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,6 +20,10 @@ function Home() {
   useEffect(() => {
     axios.get(`${API_URL}/api/markalar`)
       .then(res => setMarkalar(res.data))
+      .catch(err => console.error(err));
+
+    axios.get(`${API_URL}/api/ekstralar`)
+      .then(res => setEkstralar(res.data))
       .catch(err => console.error(err));
   }, []);
 
@@ -48,6 +54,16 @@ function Home() {
           setLoading(false);
         });
     }
+  };
+
+  const handleEkstraChange = (ekstra) => {
+    let updated = [...selectedEkstralar];
+    if (updated.includes(ekstra)) {
+      updated = updated.filter(e => e !== ekstra);
+    } else {
+      updated.push(ekstra);
+    }
+    setSelectedEkstralar(updated);
   };
 
   const toplamFiyat = parts.reduce((acc, part) => acc + part.toplam, 0);
@@ -88,6 +104,19 @@ function Home() {
             <option key={idx} value={model}>{model}</option>
           ))}
         </select>
+
+        <div className="extras">
+          {ekstralar.map((ekstra, idx) => (
+            <label key={idx} className="extra-label">
+              <input
+                type="checkbox"
+                checked={selectedEkstralar.includes(ekstra.ad)}
+                onChange={() => handleEkstraChange(ekstra.ad)}
+              />
+              {ekstra.ad}
+            </label>
+          ))}
+        </div>
       </div>
 
       {loading && <div className="loading">Yükleniyor...</div>}
@@ -120,7 +149,10 @@ function Home() {
           <div className="total">
             Toplam: {toplamFiyat.toLocaleString()} TL
           </div>
-          <button className="button" onClick={() => generatePdf(isim, plaka, selectedMarka, selectedModel, parts, toplamFiyat)}>
+          <button
+            className="button"
+            onClick={() => generatePdf(isim, plaka, selectedMarka, selectedModel, parts, toplamFiyat, selectedEkstralar)}
+          >
             PDF Teklif Oluştur
           </button>
         </>
