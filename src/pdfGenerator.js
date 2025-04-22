@@ -54,7 +54,7 @@ export function generatePdf(isim, plaka, marka, model, parts, toplamFiyat, ekstr
   doc.text("WhatsApp: 0549 833 89 38", 20, footerStart + 30);
   doc.text("Email: caliskanel@boschservice.com.tr", 20, footerStart + 40);
 
-  // QR KOD YOK
+  // QR kod iptal edildi!
 
   // PDF Kaydet
   doc.save(`Teklif_${marka}_${model}.pdf`);
