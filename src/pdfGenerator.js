@@ -1,8 +1,7 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import QRCode from "qrcode";
 
-export async function generatePdf(isim, plaka, marka, model, parts, toplamFiyat, ekstralar) {
+export function generatePdf(isim, plaka, marka, model, parts, toplamFiyat, ekstralar) {
   const doc = new jsPDF();
 
   // Başlıklar
@@ -55,11 +54,7 @@ export async function generatePdf(isim, plaka, marka, model, parts, toplamFiyat,
   doc.text("WhatsApp: 0549 833 89 38", 20, footerStart + 30);
   doc.text("Email: caliskanel@boschservice.com.tr", 20, footerStart + 40);
 
-  // QR Kod Ekleme
-  const qrUrl = "https://maps.app.goo.gl/sDn5JUQEQDKZuP5EA";
-  const qrDataUrl = await QRCode.toDataURL(qrUrl);
-
-  doc.addImage(qrDataUrl, "PNG", 140, footerStart, 50, 50);
+  // QR KOD YOK
 
   // PDF Kaydet
   doc.save(`Teklif_${marka}_${model}.pdf`);
