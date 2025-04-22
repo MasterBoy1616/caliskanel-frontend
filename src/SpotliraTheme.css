@@ -1,23 +1,21 @@
 body {
-  background: linear-gradient(to bottom right, #e0eafc, #cfdef3);
-  min-height: 100vh;
+  background-color: #f5f7fa;
+  font-family: 'Arial', sans-serif;
   margin: 0;
   padding: 0;
-  font-family: 'Arial', sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .container {
   max-width: 600px;
+  margin: 0 auto;
   padding: 1rem;
 }
 
 .header {
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 2rem;
 }
 
@@ -61,7 +59,7 @@ body {
 .button {
   width: 100%;
   padding: 1rem;
-  background-color: #4b2aad;
+  background-color: #ff6600;
   color: white;
   font-size: 1rem;
   border: none;
@@ -70,5 +68,5 @@ body {
 }
 
 .button:hover {
-  background-color: #3a208f;
+  background-color: #e65c00;
 }
