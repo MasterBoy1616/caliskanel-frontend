@@ -6,113 +6,43 @@ import "./SpotliraTheme.css";
 function Home() {
   const [markalar, setMarkalar] = useState([]);
   const [modeller, setModeller] = useState([]);
-  const [selectedMarka, setSelectedMarka] = useState("");
-  const [selectedModel, setSelectedModel] = useState("");
-  const [parts, setParts] = useState([]);
+  const [secilenMarka, setSecilenMarka] = useState("");
+  const [secilenModel, setSecilenModel] = useState("");
+  const [parcalar, setParcalar] = useState([]);
   const [isim, setIsim] = useState("");
   const [plaka, setPlaka] = useState("");
 
-  const API_BASE_URL = "https://caliskanel-bcs-teklif.onrender.com";  // API Base URL
+  const API_BASE_URL = "https://caliskanel-bcs-teklif.onrender.com";
 
   useEffect(() => {
     axios.get(`${API_BASE_URL}/api/markalar`)
-      .then(res => setMarkalar(res.data))
-      .catch(err => console.error(err));
+      .then((res) => setMarkalar(res.data))
+      .catch((err) => console.error(err));
   }, []);
 
-  const handleMarkaChange = (e) => {
-    const marka = e.target.value;
-    setSelectedMarka(marka);
-    setSelectedModel("");
-    setParts([]);
-    axios.get(`${API_BASE_URL}/api/modeller?marka=${encodeURIComponent(marka)}`)
-      .then(res => setModeller(res.data))
-      .catch(err => console.error(err));
-  };
+  useEffect(() => {
+    if (secilenMarka) {
+      axios.get(`${API_BASE_URL}/api/modeller?marka=${encodeURIComponent(secilenMarka)}`)
+        .then((res) => setModeller(res.data))
+        .catch((err) => console.error(err));
+    } else {
+      setModeller([]);
+    }
+  }, [secilenMarka]);
 
-  const handleModelChange = (e) => {
-    const model = e.target.value;
-    setSelectedModel(model);
-    axios.get(`${API_BASE_URL}/api/parcalar?marka=${encodeURIComponent(selectedMarka)}&model=${encodeURIComponent(model)}`)
-      .then(res => setParts(res.data))
-      .catch(err => console.error(err));
-  };
+  useEffect(() => {
+    if (secilenMarka && secilenModel) {
+      axios.get(`${API_BASE_URL}/api/parcalar?marka=${encodeURIComponent(secilenMarka)}&model=${encodeURIComponent(secilenModel)}`)
+        .then((res) => setParcalar(res.data))
+        .catch((err) => console.error(err));
+    } else {
+      setParcalar([]);
+    }
+  }, [secilenMarka, secilenModel]);
 
-  const toplamFiyat = parts.reduce((acc, part) => acc + part.toplam, 0);
+  const toplamFiyat = parcalar.reduce((acc, item) => acc + (item.toplam || 0), 0);
 
   return (
     <div className="container">
       <header className="header">
-        <img src="/logo-caliskanel.png" alt="Caliskanel Logo" className="logo" />
-        <img src="/logo-bosch.png" alt="Bosch Logo" className="logo" />
-      </header>
-
-      <div className="form">
-        <input
-          type="text"
-          placeholder="İsim Soyisim"
-          value={isim}
-          onChange={(e) => setIsim(e.target.value)}
-          className="input"
-        />
-        <input
-          type="text"
-          placeholder="Plaka"
-          value={plaka}
-          onChange={(e) => setPlaka(e.target.value)}
-          className="input"
-        />
-
-        <select value={selectedMarka} onChange={handleMarkaChange} className="select">
-          <option value="">Marka Seçin</option>
-          {markalar.map((marka, idx) => (
-            <option key={idx} value={marka}>{marka}</option>
-          ))}
-        </select>
-
-        <select value={selectedModel} onChange={handleModelChange} className="select" disabled={!selectedMarka}>
-          <option value="">Model Seçin</option>
-          {modeller.map((model, idx) => (
-            <option key={idx} value={model}>{model}</option>
-          ))}
-        </select>
-      </div>
-
-      {parts.length > 0 && (
-        <table className="price-table">
-          <thead>
-            <tr>
-              <th>Ürün</th>
-              <th>Adet</th>
-              <th>Birim Fiyat</th>
-              <th>Toplam</th>
-            </tr>
-          </thead>
-          <tbody>
-            {parts.map((part, idx) => (
-              <tr key={idx}>
-                <td>{part.urun}</td>
-                <td>{part.adet}</td>
-                <td>{part.birim_fiyat.toLocaleString()} TL</td>
-                <td>{part.toplam.toLocaleString()} TL</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-
-      {parts.length > 0 && (
-        <>
-          <div className="total">
-            Toplam: {toplamFiyat.toLocaleString()} TL
-          </div>
-          <button className="button" onClick={() => generatePdf(isim, plaka, selectedMarka, selectedModel, parts, toplamFiyat)}>
-            PDF Teklif Oluştur
-          </button>
-        </>
-      )}
-    </div>
-  );
-}
-
-export default Home;
+        <img src="/logo-caliskanel.png"
