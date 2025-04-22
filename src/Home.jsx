@@ -45,4 +45,93 @@ function Home() {
   return (
     <div className="container">
       <header className="header">
-        <img src="/logo-caliskanel.png"
+        <img src="/logo-caliskanel.png" alt="Caliskanel Logo" className="logo" />
+        <img src="/logo-bosch.png" alt="Bosch Logo" className="logo" />
+      </header>
+
+      <div className="form">
+        <input
+          type="text"
+          placeholder="İsim Soyisim"
+          value={isim}
+          onChange={(e) => setIsim(e.target.value)}
+          className="input"
+        />
+        <input
+          type="text"
+          placeholder="Plaka"
+          value={plaka}
+          onChange={(e) => setPlaka(e.target.value)}
+          className="input"
+        />
+
+        <select
+          value={secilenMarka}
+          onChange={(e) => setSecilenMarka(e.target.value)}
+          className="select"
+        >
+          <option value="">Marka Seçin</option>
+          {markalar.map((marka, idx) => (
+            <option key={idx} value={marka}>
+              {marka}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={secilenModel}
+          onChange={(e) => setSecilenModel(e.target.value)}
+          className="select"
+          disabled={!secilenMarka}
+        >
+          <option value="">Model Seçin</option>
+          {modeller.map((model, idx) => (
+            <option key={idx} value={model}>
+              {model}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {parcalar.length > 0 && (
+        <>
+          <table className="price-table">
+            <thead>
+              <tr>
+                <th>Ürün</th>
+                <th>Adet</th>
+                <th>Birim Fiyat</th>
+                <th>Toplam</th>
+              </tr>
+            </thead>
+            <tbody>
+              {parcalar.map((parca, idx) => (
+                <tr key={idx}>
+                  <td>{parca.urun}</td>
+                  <td>{parca.adet}</td>
+                  <td>{parca.birim_fiyat.toLocaleString()} TL</td>
+                  <td>{parca.toplam.toLocaleString()} TL</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="total">
+            Toplam: {toplamFiyat.toLocaleString()} TL
+          </div>
+
+          <button
+            className="button"
+            onClick={() =>
+              generatePdf(isim, plaka, secilenMarka, secilenModel, parcalar, toplamFiyat)
+            }
+          >
+            PDF Teklif Oluştur
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
+export default Home;
