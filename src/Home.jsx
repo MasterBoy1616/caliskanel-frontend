@@ -11,6 +11,7 @@ function Home() {
   const [parcalar, setParcalar] = useState([]);
   const [isim, setIsim] = useState("");
   const [plaka, setPlaka] = useState("");
+  const [loading, setLoading] = useState(false);  // Yükleniyor animasyonu için
 
   const API_BASE_URL = "https://caliskanel-bcs-teklif.onrender.com";
 
@@ -20,25 +21,40 @@ function Home() {
       .catch((err) => console.error(err));
   }, []);
 
-  useEffect(() => {
-    if (secilenMarka) {
-      axios.get(`${API_BASE_URL}/api/modeller?marka=${encodeURIComponent(secilenMarka)}`)
-        .then((res) => setModeller(res.data))
-        .catch((err) => console.error(err));
+  const handleMarkaChange = async (e) => {
+    const marka = e.target.value;
+    setSecilenMarka(marka);
+    setSecilenModel("");
+    setParcalar([]);
+    if (marka) {
+      setLoading(true);
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/modeller?marka=${encodeURIComponent(marka)}`);
+        setModeller(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+      setLoading(false);
     } else {
       setModeller([]);
     }
-  }, [secilenMarka]);
+  };
 
-  useEffect(() => {
-    if (secilenMarka && secilenModel) {
-      axios.get(`${API_BASE_URL}/api/parcalar?marka=${encodeURIComponent(secilenMarka)}&model=${encodeURIComponent(secilenModel)}`)
-        .then((res) => setParcalar(res.data))
-        .catch((err) => console.error(err));
-    } else {
-      setParcalar([]);
+  const handleModelChange = async (e) => {
+    const model = e.target.value;
+    setSecilenModel(model);
+    setParcalar([]);
+    if (secilenMarka && model) {
+      setLoading(true);
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/parcalar?marka=${encodeURIComponent(secilenMarka)}&model=${encodeURIComponent(model)}`);
+        setParcalar(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+      setLoading(false);
     }
-  }, [secilenMarka, secilenModel]);
+  };
 
   const toplamFiyat = parcalar.reduce((acc, item) => acc + (item.toplam || 0), 0);
 
@@ -67,7 +83,7 @@ function Home() {
 
         <select
           value={secilenMarka}
-          onChange={(e) => setSecilenMarka(e.target.value)}
+          onChange={handleMarkaChange}
           className="select"
         >
           <option value="">Marka Seçin</option>
@@ -80,7 +96,7 @@ function Home() {
 
         <select
           value={secilenModel}
-          onChange={(e) => setSecilenModel(e.target.value)}
+          onChange={handleModelChange}
           className="select"
           disabled={!secilenMarka}
         >
@@ -92,6 +108,10 @@ function Home() {
           ))}
         </select>
       </div>
+
+      {loading && (
+        <div className="loading">Yükleniyor...</div>  {/* Yükleniyor yazısı */}
+      )}
 
       {parcalar.length > 0 && (
         <>
