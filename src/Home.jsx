@@ -3,60 +3,54 @@ import axios from "axios";
 import { generatePdf } from "./pdfGenerator";
 import "./SpotliraTheme.css";
 
+const API_URL = "https://caliskanel-bcs-teklif.onrender.com";
+
 function Home() {
   const [markalar, setMarkalar] = useState([]);
   const [modeller, setModeller] = useState([]);
-  const [secilenMarka, setSecilenMarka] = useState("");
-  const [secilenModel, setSecilenModel] = useState("");
-  const [parcalar, setParcalar] = useState([]);
+  const [selectedMarka, setSelectedMarka] = useState("");
+  const [selectedModel, setSelectedModel] = useState("");
+  const [parts, setParts] = useState([]);
   const [isim, setIsim] = useState("");
   const [plaka, setPlaka] = useState("");
-  const [loading, setLoading] = useState(false);  // Yükleniyor animasyonu için
-
-  const API_BASE_URL = "https://caliskanel-bcs-teklif.onrender.com";
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/api/markalar`)
-      .then((res) => setMarkalar(res.data))
-      .catch((err) => console.error(err));
+    axios.get(`${API_URL}/api/markalar`)
+      .then(res => setMarkalar(res.data))
+      .catch(err => console.error(err));
   }, []);
 
-  const handleMarkaChange = async (e) => {
+  const handleMarkaChange = (e) => {
     const marka = e.target.value;
-    setSecilenMarka(marka);
-    setSecilenModel("");
-    setParcalar([]);
+    setSelectedMarka(marka);
+    setSelectedModel("");
+    setParts([]);
     if (marka) {
-      setLoading(true);
-      try {
-        const res = await axios.get(`${API_BASE_URL}/api/modeller?marka=${encodeURIComponent(marka)}`);
-        setModeller(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-      setLoading(false);
-    } else {
-      setModeller([]);
+      axios.get(`${API_URL}/api/modeller?marka=${encodeURIComponent(marka)}`)
+        .then(res => setModeller(res.data))
+        .catch(err => console.error(err));
     }
   };
 
-  const handleModelChange = async (e) => {
+  const handleModelChange = (e) => {
     const model = e.target.value;
-    setSecilenModel(model);
-    setParcalar([]);
-    if (secilenMarka && model) {
+    setSelectedModel(model);
+    if (selectedMarka && model) {
       setLoading(true);
-      try {
-        const res = await axios.get(`${API_BASE_URL}/api/parcalar?marka=${encodeURIComponent(secilenMarka)}&model=${encodeURIComponent(model)}`);
-        setParcalar(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-      setLoading(false);
+      axios.get(`${API_URL}/api/parcalar?marka=${encodeURIComponent(selectedMarka)}&model=${encodeURIComponent(model)}`)
+        .then(res => {
+          setParts(res.data);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setLoading(false);
+        });
     }
   };
 
-  const toplamFiyat = parcalar.reduce((acc, item) => acc + (item.toplam || 0), 0);
+  const toplamFiyat = parts.reduce((acc, part) => acc + part.toplam, 0);
 
   return (
     <div className="container">
@@ -81,71 +75,52 @@ function Home() {
           className="input"
         />
 
-        <select
-          value={secilenMarka}
-          onChange={handleMarkaChange}
-          className="select"
-        >
+        <select value={selectedMarka} onChange={handleMarkaChange} className="select">
           <option value="">Marka Seçin</option>
           {markalar.map((marka, idx) => (
-            <option key={idx} value={marka}>
-              {marka}
-            </option>
+            <option key={idx} value={marka}>{marka}</option>
           ))}
         </select>
 
-        <select
-          value={secilenModel}
-          onChange={handleModelChange}
-          className="select"
-          disabled={!secilenMarka}
-        >
+        <select value={selectedModel} onChange={handleModelChange} className="select" disabled={!selectedMarka}>
           <option value="">Model Seçin</option>
           {modeller.map((model, idx) => (
-            <option key={idx} value={model}>
-              {model}
-            </option>
+            <option key={idx} value={model}>{model}</option>
           ))}
         </select>
       </div>
 
-     {loading && (
-  <div className="loading">Yükleniyor...</div>
-)}
+      {loading && <div className="loading">Yükleniyor...</div>}
 
-      {parcalar.length > 0 && (
-        <>
-          <table className="price-table">
-            <thead>
-              <tr>
-                <th>Ürün</th>
-                <th>Adet</th>
-                <th>Birim Fiyat</th>
-                <th>Toplam</th>
+      {parts.length > 0 && (
+        <table className="price-table">
+          <thead>
+            <tr>
+              <th>Ürün</th>
+              <th>Adet</th>
+              <th>Birim Fiyat</th>
+              <th>Toplam</th>
+            </tr>
+          </thead>
+          <tbody>
+            {parts.map((part, idx) => (
+              <tr key={idx}>
+                <td>{part.urun}</td>
+                <td>{part.adet}</td>
+                <td>{part.birim_fiyat.toLocaleString()} TL</td>
+                <td>{part.toplam.toLocaleString()} TL</td>
               </tr>
-            </thead>
-            <tbody>
-              {parcalar.map((parca, idx) => (
-                <tr key={idx}>
-                  <td>{parca.urun}</td>
-                  <td>{parca.adet}</td>
-                  <td>{parca.birim_fiyat.toLocaleString()} TL</td>
-                  <td>{parca.toplam.toLocaleString()} TL</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
+      )}
 
+      {parts.length > 0 && (
+        <>
           <div className="total">
             Toplam: {toplamFiyat.toLocaleString()} TL
           </div>
-
-          <button
-            className="button"
-            onClick={() =>
-              generatePdf(isim, plaka, secilenMarka, secilenModel, parcalar, toplamFiyat)
-            }
-          >
+          <button className="button" onClick={() => generatePdf(isim, plaka, selectedMarka, selectedModel, parts, toplamFiyat)}>
             PDF Teklif Oluştur
           </button>
         </>
