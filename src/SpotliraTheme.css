@@ -1,22 +1,23 @@
 body {
-  background-color: #f5f7fa;
-  font-family: 'Arial', sans-serif;
+  background: linear-gradient(to bottom, #b799ff, #acbcff, #aee2ff);
+  font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
+  min-height: 100vh;
 }
 
 .container {
   max-width: 600px;
-  margin: 0 auto;
-  padding: 1rem;
+  margin: 20px auto;
+  padding: 20px;
 }
 
 .header {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
 .logo {
@@ -26,47 +27,78 @@ body {
 .form {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
-  margin-bottom: 1.5rem;
+  gap: 10px;
+  margin-bottom: 20px;
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .input, .select {
-  padding: 0.7rem;
+  padding: 12px;
   font-size: 1rem;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid #ccc;
+}
+
+.extras {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.extra-label {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .price-table {
   width: 100%;
-  margin-bottom: 1rem;
+  background: white;
   border-collapse: collapse;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  overflow: hidden;
 }
 
-.price-table th, .price-table td {
-  border: 1px solid #ddd;
-  padding: 0.8rem;
+.price-table th,
+.price-table td {
+  padding: 10px;
   text-align: center;
+  border-bottom: 1px solid #eee;
 }
 
 .total {
-  font-size: 1.2rem;
+  font-size: 20px;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 20px;
+  color: #5d3fd3;
 }
 
 .button {
   width: 100%;
-  padding: 1rem;
-  background-color: #ff6600;
+  padding: 14px;
+  background: linear-gradient(to right, #6c63ff, #9f86c0);
   color: white;
   font-size: 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 14px;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 .button:hover {
-  background-color: #e65c00;
+  background: linear-gradient(to right, #5a4cff, #7b5ea0);
+}
+
+.loading {
+  text-align: center;
+  font-size: 16px;
+  margin: 20px 0;
+  color: #6c63ff;
 }
