@@ -12,8 +12,10 @@ function Home() {
   const [isim, setIsim] = useState("");
   const [plaka, setPlaka] = useState("");
 
+  const API_BASE_URL = "https://caliskanel-bcs-teklif.onrender.com";  // 💥 API Base URL
+
   useEffect(() => {
-    axios.get('/api/markalar')
+    axios.get(`${API_BASE_URL}/api/markalar`)
       .then(res => setMarkalar(res.data))
       .catch(err => console.error(err));
   }, []);
@@ -23,7 +25,7 @@ function Home() {
     setSelectedMarka(marka);
     setSelectedModel("");
     setParts([]);
-    axios.get(`/api/modeller?marka=${encodeURIComponent(marka)}`)
+    axios.get(`${API_BASE_URL}/api/modeller?marka=${encodeURIComponent(marka)}`)
       .then(res => setModeller(res.data))
       .catch(err => console.error(err));
   };
@@ -31,7 +33,7 @@ function Home() {
   const handleModelChange = (e) => {
     const model = e.target.value;
     setSelectedModel(model);
-    axios.get(`/api/parcalar?marka=${encodeURIComponent(selectedMarka)}&model=${encodeURIComponent(model)}`)
+    axios.get(`${API_BASE_URL}/api/parcalar?marka=${encodeURIComponent(selectedMarka)}&model=${encodeURIComponent(model)}`)
       .then(res => setParts(res.data))
       .catch(err => console.error(err));
   };
@@ -41,7 +43,7 @@ function Home() {
   return (
     <div className="container">
       <header className="header">
-        <img src="/logo-caliskanel.png" alt="Çalışkanel Logo" className="logo" />
+        <img src="/logo-caliskanel.png" alt="Caliskanel Logo" className="logo" />
         <img src="/logo-bosch.png" alt="Bosch Logo" className="logo" />
       </header>
 
