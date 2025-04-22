@@ -12,7 +12,7 @@ function Home() {
   const [isim, setIsim] = useState("");
   const [plaka, setPlaka] = useState("");
 
-  const API_BASE_URL = "https://caliskanel-bcs-teklif.onrender.com";  // 💥 API Base URL
+  const API_BASE_URL = "https://caliskanel-bcs-teklif.onrender.com";  // API Base URL
 
   useEffect(() => {
     axios.get(`${API_BASE_URL}/api/markalar`)
