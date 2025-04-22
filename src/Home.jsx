@@ -33,9 +33,16 @@ function Home() {
     setSelectedModel("");
     setParts([]);
     if (marka) {
+      setLoading(true);
       axios.get(`${API_URL}/api/modeller?marka=${encodeURIComponent(marka)}`)
-        .then(res => setModeller(res.data))
-        .catch(err => console.error(err));
+        .then(res => {
+          setModeller(res.data);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setLoading(false);
+        });
     }
   };
 
@@ -157,6 +164,16 @@ function Home() {
           </button>
         </>
       )}
+
+      <footer className="footer">
+        <h3>Çalışkanel Bosch Car Servisi</h3>
+        <p>Adres: 29 Ekim Mah. İzmir Yolu Cd No:384 Nilüfer / Bursa</p>
+        <p>Tel: 0224 443 57 88 - WhatsApp: 0549 833 89 38</p>
+        <p>Email: caliskanel@boschservice.com.tr</p>
+        <a href="https://maps.app.goo.gl/sDn5JUQEQDKZuP5EA" target="_blank" rel="noopener noreferrer">
+          Konum için tıklayın
+        </a>
+      </footer>
     </div>
   );
 }
