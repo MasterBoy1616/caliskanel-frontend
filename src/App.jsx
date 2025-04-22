@@ -1,8 +1,9 @@
-import React from "react";
-import Home from "./Home";
-
 function App() {
-  return <Home />;
+  return (
+    <div>
+      {/* Şu anlık boş */}
+    </div>
+  )
 }
 
 export default App;
