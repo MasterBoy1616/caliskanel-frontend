@@ -109,9 +109,9 @@ function Home() {
         </select>
       </div>
 
-      {loading && (
-        <div className="loading">Yükleniyor...</div>  {/* Yükleniyor yazısı */}
-      )}
+     {loading && (
+  <div className="loading">Yükleniyor...</div>
+)}
 
       {parcalar.length > 0 && (
         <>
